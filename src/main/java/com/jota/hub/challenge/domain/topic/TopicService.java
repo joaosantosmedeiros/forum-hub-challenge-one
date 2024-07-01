@@ -14,8 +14,8 @@ public class TopicService {
     @Autowired
     private TopicRepository topicRepository;
 
-    public Topic create(TopicDTO topicDTO) {
-        Topic topic = new Topic(null, topicDTO.title(), topicDTO.message(), LocalDateTime.now(), TopicStatus.OPEN, topicDTO.author());
+    public Topic create(CreateTopicDTO createTopicDTO) {
+        Topic topic = new Topic(null, createTopicDTO.title(), createTopicDTO.message(), LocalDateTime.now(), TopicStatus.OPEN, createTopicDTO.author());
         return topicRepository.save(topic);
     }
 
@@ -25,5 +25,20 @@ public class TopicService {
 
     public Topic findById(Long id) {
         return topicRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+
+    public Topic update(Long id, String message, String title) {
+        Topic topic = findById(id);
+
+        if(message != null && !message.isBlank()){
+            topic.setMessage(message);
+        }
+
+        if(title != null && !title.isBlank()){
+            topic.setTitle(title);
+        }
+
+        return topicRepository.save(topic);
     }
 }

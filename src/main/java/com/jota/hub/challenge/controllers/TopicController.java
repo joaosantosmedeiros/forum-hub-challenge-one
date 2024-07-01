@@ -1,8 +1,9 @@
 package com.jota.hub.challenge.controllers;
 
 import com.jota.hub.challenge.domain.topic.Topic;
-import com.jota.hub.challenge.domain.topic.TopicDTO;
+import com.jota.hub.challenge.domain.topic.CreateTopicDTO;
 import com.jota.hub.challenge.domain.topic.TopicService;
+import com.jota.hub.challenge.domain.topic.UpdateTopicDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,8 +21,8 @@ public class TopicController {
     private TopicService topicService;
 
     @PostMapping
-    public ResponseEntity<Topic> createTopic(@RequestBody @Valid TopicDTO topicDTO) {
-        var topic = topicService.create(topicDTO);
+    public ResponseEntity<Topic> createTopic(@RequestBody @Valid CreateTopicDTO dto) {
+        var topic = topicService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(topic);
     }
 
@@ -33,5 +34,10 @@ public class TopicController {
     @GetMapping("/{id}")
     public ResponseEntity<Topic> getOne(@PathVariable Long id) {
         return ResponseEntity.ok(topicService.findById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Topic> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicDTO dto) {
+        return ResponseEntity.ok(topicService.update(id, dto.message(), dto.title()));
     }
 }
