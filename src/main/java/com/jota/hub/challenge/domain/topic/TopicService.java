@@ -1,7 +1,8 @@
 package com.jota.hub.challenge.domain.topic;
 
-import com.jota.hub.challenge.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,4 +18,7 @@ public class TopicService {
         return topicRepository.save(topic);
     }
 
+    public Page<Topic> findAll(Pageable pageable) {
+        return topicRepository.findAll(pageable);
+    }
 }
