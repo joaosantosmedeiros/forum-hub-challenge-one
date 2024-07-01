@@ -40,4 +40,10 @@ public class TopicController {
     public ResponseEntity<Topic> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicDTO dto) {
         return ResponseEntity.ok(topicService.update(id, dto.message(), dto.title()));
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        topicService.delete(id);
+    }
 }

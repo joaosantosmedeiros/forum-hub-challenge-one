@@ -41,4 +41,9 @@ public class TopicService {
 
         return topicRepository.save(topic);
     }
+
+    public void delete(Long id) {
+        var topic = findById(id);
+        topicRepository.delete(topic);
+    }
 }
