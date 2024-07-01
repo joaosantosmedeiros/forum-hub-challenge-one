@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 @Service
 public class TopicService {
@@ -20,5 +21,9 @@ public class TopicService {
 
     public Page<Topic> findAll(Pageable pageable) {
         return topicRepository.findAll(pageable);
+    }
+
+    public Topic findById(Long id) {
+        return topicRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 }

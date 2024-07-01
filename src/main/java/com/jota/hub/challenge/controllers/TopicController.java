@@ -29,4 +29,9 @@ public class TopicController {
     public ResponseEntity<Page<Topic>> list(@PageableDefault(sort = "creationTime") Pageable pageable){
         return ResponseEntity.ok(topicService.findAll(pageable));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Topic> getOne(@PathVariable Long id) {
+        return ResponseEntity.ok(topicService.findById(id));
+    }
 }
