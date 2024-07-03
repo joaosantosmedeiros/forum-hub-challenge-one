@@ -33,8 +33,8 @@ public class TopicController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Topic>> list(@PageableDefault(sort = "creationTime") Pageable pageable){
-        return ResponseEntity.ok(topicService.findAll(pageable));
+    public ResponseEntity<Page<ReturnTopicDTO>> list(@PageableDefault(sort = "creationTime") Pageable pageable){
+        return ResponseEntity.ok(topicService.findAll(pageable).map(ReturnTopicDTO::new));
     }
 
     @GetMapping("/{id}")
@@ -44,8 +44,9 @@ public class TopicController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Topic> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicDTO dto) {
-        return ResponseEntity.ok(topicService.update(id, dto.message(), dto.title()));
+    public ResponseEntity<ReturnTopicDTO> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicDTO dto) {
+        var topic = topicService.update(id, dto.message(), dto.title());
+        return ResponseEntity.ok(new ReturnTopicDTO(topic));
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
