@@ -38,8 +38,9 @@ public class TopicController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Topic> getOne(@PathVariable Long id) {
-        return ResponseEntity.ok(topicService.findById(id));
+    public ResponseEntity<ReturnTopicDTO> getOne(@PathVariable Long id) {
+        var topic = topicService.findById(id);
+        return ResponseEntity.ok(new ReturnTopicDTO(topic));
     }
 
     @PutMapping("/{id}")
