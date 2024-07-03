@@ -1,9 +1,11 @@
 package com.jota.hub.challenge.controllers;
 
-import com.jota.hub.challenge.domain.topic.Topic;
-import com.jota.hub.challenge.domain.topic.CreateTopicDTO;
-import com.jota.hub.challenge.domain.topic.TopicService;
-import com.jota.hub.challenge.domain.topic.UpdateTopicDTO;
+import com.jota.hub.challenge.domain.topic.*;
+import com.jota.hub.challenge.domain.topic.dto.CreateTopicDTO;
+import com.jota.hub.challenge.domain.topic.dto.ReturnTopicDTO;
+import com.jota.hub.challenge.domain.topic.dto.UpdateTopicDTO;
+import com.jota.hub.challenge.domain.user.User;
+import com.jota.hub.challenge.domain.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,7 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/topicos")
@@ -21,9 +26,10 @@ public class TopicController {
     private TopicService topicService;
 
     @PostMapping
-    public ResponseEntity<Topic> createTopic(@RequestBody @Valid CreateTopicDTO dto) {
-        var topic = topicService.create(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(topic);
+    public ResponseEntity<ReturnTopicDTO> createTopic(@RequestBody @Valid CreateTopicDTO dto) {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var topic = new Topic(null, dto.title(), dto.message(), LocalDateTime.now(), TopicStatus.OPEN, user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ReturnTopicDTO(topicService.create(topic)));
     }
 
     @GetMapping
