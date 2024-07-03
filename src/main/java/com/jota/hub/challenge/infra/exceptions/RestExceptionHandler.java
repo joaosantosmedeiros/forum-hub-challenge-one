@@ -1,4 +1,4 @@
-package com.jota.hub.challenge.infra;
+package com.jota.hub.challenge.infra.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
