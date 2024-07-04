@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -23,5 +24,14 @@ public class AnswerService {
 
     public Answer findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Answer not found."));
+    }
+
+    public Answer update(Answer answer) {
+        var answerExists = findById(answer.getId());
+        if(!Objects.equals(answerExists.getAuthor().getId(), answer.getAuthor().getId())){
+            throw new SecurityException("User can only update their own answers.");
+        }
+        answerExists.setMessage(answer.getMessage());
+        return repository.save(answerExists);
     }
 }

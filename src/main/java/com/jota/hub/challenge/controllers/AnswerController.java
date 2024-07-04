@@ -3,6 +3,7 @@ package com.jota.hub.challenge.controllers;
 import com.jota.hub.challenge.domain.answer.Answer;
 import com.jota.hub.challenge.domain.answer.AnswerService;
 import com.jota.hub.challenge.domain.answer.dto.AnswerDTO;
+import com.jota.hub.challenge.domain.answer.dto.UpdateAnswerDTO;
 import com.jota.hub.challenge.domain.topic.TopicService;
 import com.jota.hub.challenge.domain.user.User;
 import com.jota.hub.challenge.domain.user.UserService;
@@ -49,5 +50,9 @@ public class AnswerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AnswerDTO> update(@PathVariable Long id, )
+    public ResponseEntity<AnswerDTO> update(@PathVariable Long id, @RequestBody @Valid UpdateAnswerDTO dto){
+        User author = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Answer answer = answerService.update(new Answer(id, dto.message(), null, null, author));
+        return ResponseEntity.ok(new AnswerDTO(answer));
+    }
 }
