@@ -4,6 +4,7 @@ import com.jota.hub.challenge.domain.course.Course;
 import jakarta.validation.constraints.NotBlank;
 
 public record CourseDTO(
+        Long id,
         @NotBlank
         String name,
         @NotBlank
@@ -11,6 +12,6 @@ public record CourseDTO(
         boolean isActive
 ) {
     public CourseDTO(Course course){
-        this(course.getName(), course.getCategory(), course.isActive());
+        this(course.getId(), course.getName(), course.getCategory(), course.isActive());
     }
 }
