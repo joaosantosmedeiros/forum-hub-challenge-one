@@ -5,6 +5,7 @@ import com.jota.hub.challenge.infra.security.TokenService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/login")
+@AllArgsConstructor
 public class AutenticationController {
 
-    @Autowired
     private AuthenticationManager manager;
 
     @Autowired

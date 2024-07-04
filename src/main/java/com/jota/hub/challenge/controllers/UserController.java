@@ -6,6 +6,7 @@ import com.jota.hub.challenge.domain.user.UserService;
 import com.jota.hub.challenge.domain.user.dto.ReturnUserDTO;
 import com.jota.hub.challenge.domain.user.dto.UpdateUserDTO;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuarios")
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
     private UserService userService;
 
     @PostMapping

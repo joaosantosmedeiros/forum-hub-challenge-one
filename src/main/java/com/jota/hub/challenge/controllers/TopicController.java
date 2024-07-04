@@ -9,6 +9,7 @@ import com.jota.hub.challenge.domain.topic.dto.ReturnTopicDTO;
 import com.jota.hub.challenge.domain.topic.dto.UpdateTopicDTO;
 import com.jota.hub.challenge.domain.user.User;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,11 +23,10 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/topicos")
+@AllArgsConstructor
 public class TopicController {
 
-    @Autowired
     private TopicService topicService;
-    @Autowired
     private CourseService courseService;
 
     @PostMapping

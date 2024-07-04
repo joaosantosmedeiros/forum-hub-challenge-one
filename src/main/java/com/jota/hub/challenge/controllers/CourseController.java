@@ -5,6 +5,7 @@ import com.jota.hub.challenge.domain.course.CourseService;
 import com.jota.hub.challenge.domain.course.dtos.CourseDTO;
 import com.jota.hub.challenge.domain.course.dtos.UpdateCourseDTO;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/cursos")
+@AllArgsConstructor
 public class CourseController {
 
-    @Autowired
     private CourseService courseService;
 
     @PostMapping
