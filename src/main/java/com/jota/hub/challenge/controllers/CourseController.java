@@ -25,7 +25,7 @@ public class CourseController {
 
         var course = courseService.create(new Course(
                 null,
-                courseDTO.category(),
+                courseDTO.name(),
                 courseDTO.category(),
                 courseDTO.isActive(),
                 null
