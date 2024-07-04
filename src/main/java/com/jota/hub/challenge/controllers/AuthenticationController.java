@@ -1,6 +1,7 @@
 package com.jota.hub.challenge.controllers;
 
 import com.jota.hub.challenge.domain.user.User;
+import com.jota.hub.challenge.infra.dto.StandardResponseDTO;
 import com.jota.hub.challenge.infra.security.TokenService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/login")
 @AllArgsConstructor
-public class AutenticationController {
+public class AuthenticationController {
 
     private AuthenticationManager manager;
 
@@ -26,13 +27,17 @@ public class AutenticationController {
     private TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity login(@RequestBody @Valid LoginDTO dto) {
+    public ResponseEntity<StandardResponseDTO<String>> login(@RequestBody @Valid LoginDTO dto) {
         var authenticationToken = new UsernamePasswordAuthenticationToken(dto.email(), dto.password());
         var authentication = manager.authenticate(authenticationToken);
 
         var token = tokenService.generateToken((User) authentication.getPrincipal());
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(new StandardResponseDTO<>(
+                "Success.",
+                true,
+                "Bearer " + token
+        ));
     }
 
     record LoginDTO(
