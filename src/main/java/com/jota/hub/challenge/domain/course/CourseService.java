@@ -48,10 +48,10 @@ public class CourseService {
 
     public Course update(Course course) {
         var courseExists = findById(course.getId());
-        if(!course.getName().isBlank() && !course.getName().equals(courseExists.getName())){
+        if(course.getName() != null && !course.getName().isBlank() && !course.getName().equals(courseExists.getName())){
             courseExists.setName(course.getName());
         }
-        if(!course.getCategory().isBlank() && !course.getCategory().equals(courseExists.getCategory())){
+        if(course.getCategory() != null && !course.getCategory().isBlank() && !course.getCategory().equals(courseExists.getCategory())){
             courseExists.setCategory(course.getCategory());
         }
 
