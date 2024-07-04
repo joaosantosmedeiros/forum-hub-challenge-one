@@ -1,21 +1,18 @@
 package com.jota.hub.challenge.domain.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 
 @Service
+@AllArgsConstructor
 public class UserService {
 
-    @Autowired
     private UserRepository repository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public User create(User user) {

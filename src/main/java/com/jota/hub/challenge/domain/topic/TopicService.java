@@ -1,6 +1,6 @@
 package com.jota.hub.challenge.domain.topic;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 
 @Service
+@AllArgsConstructor
 public class TopicService {
 
-    @Autowired
     private TopicRepository topicRepository;
 
     public Topic create(Topic topic) {
