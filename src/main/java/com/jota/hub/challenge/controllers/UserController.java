@@ -1,6 +1,6 @@
 package com.jota.hub.challenge.controllers;
 
-import com.jota.hub.challenge.domain.user.CreateUserDTO;
+import com.jota.hub.challenge.domain.user.dto.CreateUserDTO;
 import com.jota.hub.challenge.domain.user.User;
 import com.jota.hub.challenge.domain.user.UserService;
 import com.jota.hub.challenge.domain.user.dto.ReturnUserDTO;
