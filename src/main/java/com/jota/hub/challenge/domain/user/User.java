@@ -31,6 +31,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private Boolean isActive;
+
     @OneToMany(mappedBy = "author")
     private List<Topic> topics;
 

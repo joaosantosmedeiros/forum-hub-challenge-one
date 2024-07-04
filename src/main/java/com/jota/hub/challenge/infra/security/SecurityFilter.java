@@ -30,7 +30,11 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (tokenJWT != null) {
             var email = tokenService.getSubject(tokenJWT);
-            var user = repository.findByEmail(email).orElseThrow(NoSuchElementException::new);
+            var user = repository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("User not found."));
+
+            if(!user.getIsActive()){
+                throw new IllegalArgumentException("User must be active.");
+            }
 
             var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);

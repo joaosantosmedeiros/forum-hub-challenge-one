@@ -1,5 +1,6 @@
 package com.jota.hub.challenge.infra.security;
 
+import com.jota.hub.challenge.domain.user.User;
 import com.jota.hub.challenge.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,10 @@ public class AutenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).get();
+        User user = userRepository.findByEmail(username).get();
+        if(!user.getIsActive()){
+            return null;
+        }
+        return user;
     }
 }
