@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
-//TODO padronizar resposta dos controllers e exception handler
 @RestControllerAdvice
 public class RestExceptionHandler {
 
@@ -34,21 +34,24 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(SecurityException.class)
     public ResponseEntity<StandardResponseDTO<Object>> unauthorized(SecurityException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StandardResponseDTO<>(
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new StandardResponseDTO<>(
                 ex.getMessage(),
                 false,
                 null
         ));
     }
 
-//TODO consertar
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardResponseDTO<Object>> invalidArgument(MethodArgumentNotValidException ex){
         var fields = ex.getFieldErrors();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StandardResponseDTO<>(
-                "",
+                fields.stream().collect(Collectors.groupingBy(field -> field.getDefaultMessage(),
+                                Collectors.mapping(field -> field.getField(), Collectors.joining(", "))))
+                        .entrySet().stream()
+                        .map(entry -> entry.getValue() + " " + entry.getKey())
+                        .collect(Collectors.joining(". ")),
                 false,
-                fields.stream().map(ErrorValidationData::new)
+                null
         ));
     }
 
