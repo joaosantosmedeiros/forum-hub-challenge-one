@@ -1,5 +1,6 @@
 package com.jota.hub.challenge.infra.exceptions;
 
+import com.jota.hub.challenge.infra.dto.StandardResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,24 +15,41 @@ import java.util.NoSuchElementException;
 public class RestExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity notFound(NoSuchElementException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<StandardResponseDTO<Object>> notFound(NoSuchElementException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new StandardResponseDTO<>(
+                ex.getMessage(),
+                false,
+                null
+        ));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity badRequest(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<StandardResponseDTO<Object>> badRequest(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StandardResponseDTO<>(
+                ex.getMessage(),
+                false,
+                null
+        ));
     }
 
     @ExceptionHandler(SecurityException.class)
-    public ResponseEntity unauthorized(SecurityException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    public ResponseEntity<StandardResponseDTO<Object>> unauthorized(SecurityException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StandardResponseDTO<>(
+                ex.getMessage(),
+                false,
+                null
+        ));
     }
 
+//TODO consertar
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity invalidArgument(MethodArgumentNotValidException ex){
+    public ResponseEntity<StandardResponseDTO<Object>> invalidArgument(MethodArgumentNotValidException ex){
         var fields = ex.getFieldErrors();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(fields.stream().map(ErrorValidationData::new));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new StandardResponseDTO<>(
+                "",
+                false,
+                fields.stream().map(ErrorValidationData::new)
+        ));
     }
 
     private record ErrorValidationData(String field, String message) {
