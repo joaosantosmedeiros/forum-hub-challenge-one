@@ -32,6 +32,10 @@ public class TopicService {
     public Topic update(Long id, String message, String title) {
         Topic topic = findById(id);
 
+        if(!topic.isActive()){
+            throw new IllegalArgumentException("Topic must be active.");
+        }
+
         if(message != null && !message.isBlank()){
             topic.setMessage(message);
         }
@@ -45,6 +49,12 @@ public class TopicService {
 
     public void delete(Long id) {
         var topic = findById(id);
-        topicRepository.delete(topic);
+
+        if(!topic.isActive()){
+            throw new IllegalArgumentException("The topic is already inactive.");
+        }
+
+        topic.setActive(false);
+        topicRepository.save(topic);
     }
 }

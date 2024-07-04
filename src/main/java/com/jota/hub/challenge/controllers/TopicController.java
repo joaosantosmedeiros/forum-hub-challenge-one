@@ -33,7 +33,7 @@ public class TopicController {
     public ResponseEntity<ReturnTopicDTO> createTopic(@RequestBody @Valid CreateTopicDTO dto) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var course = courseService.findById(dto.courseId());
-        var topic = new Topic(null, dto.title(), dto.message(), LocalDateTime.now(), TopicStatus.OPEN, user, course);
+        var topic = new Topic(null, dto.title(), dto.message(), LocalDateTime.now(), TopicStatus.OPEN, true, user, course);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ReturnTopicDTO(topicService.create(topic)));
     }
 

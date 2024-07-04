@@ -22,14 +22,19 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String message;
 
     private LocalDateTime creationTime;
 
     @Enumerated(value = EnumType.STRING)
     private TopicStatus status;
+
+    @Column(nullable = false)
+    private boolean isActive;
 
     @ManyToOne
     @JoinColumn(name = "authorId")
