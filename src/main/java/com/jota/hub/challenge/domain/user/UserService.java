@@ -54,4 +54,26 @@ public class UserService {
         user.setIsActive(false);
         repository.save(user);
     }
+
+    public User update(User user) {
+        var userExists = findById(user.getId());
+
+        if(user.getName() != null && !user.getName().isBlank()){
+            userExists.setName(user.getName());
+        }
+
+        var emailInUse = repository.findByEmail(user.getEmail());
+        if(emailInUse.isPresent() && !emailInUse.get().getEmail().equalsIgnoreCase(userExists.getEmail())){
+            throw new IllegalArgumentException("Email already in use.");
+        }
+        if(user.getEmail() != null && !user.getEmail().isBlank()){
+            userExists.setEmail(user.getEmail());
+        }
+
+        if(user.getPassword() != null && !user.getPassword().isBlank()){
+            userExists.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        return repository.save(userExists);
+    }
 }

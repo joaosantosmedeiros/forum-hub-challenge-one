@@ -4,6 +4,7 @@ import com.jota.hub.challenge.domain.user.CreateUserDTO;
 import com.jota.hub.challenge.domain.user.User;
 import com.jota.hub.challenge.domain.user.UserService;
 import com.jota.hub.challenge.domain.user.dto.ReturnUserDTO;
+import com.jota.hub.challenge.domain.user.dto.UpdateUserDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,16 @@ public class UserController {
     public ResponseEntity<ReturnUserDTO> findById(@PathVariable(value = "id") Long id) {
         var user = userService.findById(id);
         return ResponseEntity.ok(new ReturnUserDTO(user));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReturnUserDTO> update(@PathVariable Long id, @RequestBody UpdateUserDTO dto) {
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(user.getId() != id){
+            throw new SecurityException("User can only update itself.");
+        }
+        User updatedUser = userService.update(new User(id, dto.name(), dto.email(), dto.password(), true, null));
+        return ResponseEntity.ok(new ReturnUserDTO(updatedUser));
     }
 
     @DeleteMapping("/{id}")
