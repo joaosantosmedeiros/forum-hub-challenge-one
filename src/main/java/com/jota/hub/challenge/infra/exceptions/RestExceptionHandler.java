@@ -7,12 +7,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.NoSuchElementException;
 
+//TODO padronizar resposta dos controllers e exception handler
 @RestControllerAdvice
 public class RestExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity notFound() {
-        return ResponseEntity.notFound().build();
+    public ResponseEntity notFound(NoSuchElementException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
