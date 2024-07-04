@@ -45,4 +45,16 @@ public class CourseService {
         course.setActive(false);
         courseRepository.save(course);
     }
+
+    public Course update(Course course) {
+        var courseExists = findById(course.getId());
+        if(!course.getName().isBlank() && !course.getName().equals(courseExists.getName())){
+            courseExists.setName(course.getName());
+        }
+        if(!course.getCategory().isBlank() && !course.getCategory().equals(courseExists.getCategory())){
+            courseExists.setCategory(course.getCategory());
+        }
+
+        return courseRepository.save(courseExists);
+    }
 }
