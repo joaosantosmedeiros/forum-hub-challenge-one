@@ -2,7 +2,7 @@ package com.jota.hub.challenge.controllers;
 
 import com.jota.hub.challenge.domain.answer.Answer;
 import com.jota.hub.challenge.domain.answer.AnswerService;
-import com.jota.hub.challenge.domain.answer.dtos.AnswerDTO;
+import com.jota.hub.challenge.domain.answer.dto.AnswerDTO;
 import com.jota.hub.challenge.domain.topic.TopicService;
 import com.jota.hub.challenge.domain.user.User;
 import com.jota.hub.challenge.domain.user.UserService;
@@ -47,4 +47,7 @@ public class AnswerController {
 
         return ResponseEntity.ok(answers.stream().map(AnswerDTO::new).toList());
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AnswerDTO> update(@PathVariable Long id, )
 }

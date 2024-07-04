@@ -1,4 +1,4 @@
-package com.jota.hub.challenge.domain.answer.dtos;
+package com.jota.hub.challenge.domain.answer.dto;
 
 import com.jota.hub.challenge.domain.answer.Answer;
 import jakarta.validation.constraints.NotBlank;
