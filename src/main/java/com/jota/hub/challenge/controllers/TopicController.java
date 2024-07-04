@@ -8,6 +8,7 @@ import com.jota.hub.challenge.domain.topic.dto.CreateTopicDTO;
 import com.jota.hub.challenge.domain.topic.dto.ReturnTopicDTO;
 import com.jota.hub.challenge.domain.topic.dto.UpdateTopicDTO;
 import com.jota.hub.challenge.domain.user.User;
+import com.jota.hub.challenge.infra.dto.StandardResponseDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,29 +31,47 @@ public class TopicController {
     private CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<ReturnTopicDTO> createTopic(@RequestBody @Valid CreateTopicDTO dto) {
+    public ResponseEntity<StandardResponseDTO<ReturnTopicDTO>> createTopic(@RequestBody @Valid CreateTopicDTO dto) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var course = courseService.findById(dto.courseId());
         var topic = new Topic(null, dto.title(), dto.message(), LocalDateTime.now(), TopicStatus.OPEN, true, user, course);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ReturnTopicDTO(topicService.create(topic)));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new StandardResponseDTO<>(
+                "Topic created successfully.",
+                true,
+                new ReturnTopicDTO(topicService.create(topic)
+        )));
     }
 
     @GetMapping
-    public ResponseEntity<Page<ReturnTopicDTO>> list(@PageableDefault(sort = "creationTime") Pageable pageable){
-        return ResponseEntity.ok(topicService.findAll(pageable).map(ReturnTopicDTO::new));
+    public ResponseEntity<StandardResponseDTO<Page<ReturnTopicDTO>>> list(@PageableDefault(sort = "creationTime") Pageable pageable){
+        return ResponseEntity.ok(new StandardResponseDTO<>(
+                "Listing topics.",
+                true,
+                topicService.findAll(pageable).map(ReturnTopicDTO::new)
+        ));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReturnTopicDTO> getOne(@PathVariable Long id) {
+    public ResponseEntity<StandardResponseDTO<ReturnTopicDTO>> getOne(@PathVariable Long id) {
         var topic = topicService.findById(id);
-        return ResponseEntity.ok(new ReturnTopicDTO(topic));
+        return ResponseEntity.ok(new StandardResponseDTO<>(
+                "Showing found topic.",
+                true,
+                new ReturnTopicDTO(topic)
+        ));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReturnTopicDTO> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicDTO dto) {
+    public ResponseEntity<StandardResponseDTO<ReturnTopicDTO>> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicDTO dto) {
         User author = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Topic topic = new Topic(id, dto.title(), dto.message(), null, null, true, author, null);
-        return ResponseEntity.ok(new ReturnTopicDTO(topicService.update(topic)));
+
+        return ResponseEntity.ok(new StandardResponseDTO<>(
+                "Topic updated successfully.",
+                true,
+                new ReturnTopicDTO(topicService.update(topic))
+        ));
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
