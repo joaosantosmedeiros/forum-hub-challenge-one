@@ -4,9 +4,9 @@ import com.jota.hub.challenge.domain.course.Course;
 import com.jota.hub.challenge.domain.course.CourseService;
 import com.jota.hub.challenge.domain.course.dtos.CourseDTO;
 import com.jota.hub.challenge.domain.course.dtos.UpdateCourseDTO;
+import com.jota.hub.challenge.infra.dto.StandardResponseDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,7 +22,7 @@ public class CourseController {
     private CourseService courseService;
 
     @PostMapping
-    public ResponseEntity<CourseDTO> create(@RequestBody @Valid CourseDTO courseDTO) {
+    public ResponseEntity<StandardResponseDTO<CourseDTO>> create(@RequestBody @Valid CourseDTO courseDTO) {
 
         var course = courseService.create(new Course(
                 null,
@@ -32,25 +32,41 @@ public class CourseController {
                 null
         ));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new CourseDTO(course));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new StandardResponseDTO<>(
+                "Course created successfully.",
+                true,
+                new CourseDTO(course)
+        ));
     }
 
     @GetMapping
-    public ResponseEntity<Page<CourseDTO>> list(@PageableDefault(sort = "id") Pageable pageable){
-        return ResponseEntity.ok(courseService.list(pageable).map(CourseDTO::new));
+    public ResponseEntity<StandardResponseDTO<Page<CourseDTO>>> list(@PageableDefault(sort = "id") Pageable pageable){
+        return ResponseEntity.ok(new StandardResponseDTO<>(
+                "Listing courses.",
+                true,
+                courseService.list(pageable).map(CourseDTO::new)
+        ));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDTO> findById(@PathVariable(value = "id") Long id){
+    public ResponseEntity<StandardResponseDTO<CourseDTO>> findById(@PathVariable(value = "id") Long id){
         var course = courseService.findById(id);
-        return ResponseEntity.ok(new CourseDTO(course));
+        return ResponseEntity.ok(new StandardResponseDTO<>(
+                "Showing found course.",
+                true,
+                new CourseDTO(course)
+        ));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseDTO> update(@PathVariable Long id, @RequestBody UpdateCourseDTO dto) {
+    public ResponseEntity<StandardResponseDTO<CourseDTO>> update(@PathVariable Long id, @RequestBody UpdateCourseDTO dto) {
 
         Course course = courseService.update(new Course(id, dto.name(), dto.category(), true, null));
-        return ResponseEntity.ok(new CourseDTO(course));
+        return ResponseEntity.ok(new StandardResponseDTO<>(
+                "Course updated successfully.",
+                true,
+                new CourseDTO(course)
+        ));
     }
 
     @DeleteMapping("/{id}")
