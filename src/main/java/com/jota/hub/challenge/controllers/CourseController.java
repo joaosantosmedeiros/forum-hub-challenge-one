@@ -43,4 +43,10 @@ public class CourseController {
         var course = courseService.findById(id);
         return ResponseEntity.ok(new CourseDTO(course));
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable(value = "id") Long id){
+        courseService.delete(id);
+    }
 }
