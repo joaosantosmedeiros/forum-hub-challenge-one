@@ -25,7 +25,7 @@ public class TopicService {
     }
 
     public Topic findById(Long id) {
-        return topicRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return topicRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Topic not found."));
     }
 
 
