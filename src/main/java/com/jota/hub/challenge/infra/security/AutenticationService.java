@@ -16,10 +16,11 @@ public class AutenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username).get();
-        if(!user.getIsActive()){
+        User user = userRepository.findByEmail(username).orElse(null);
+        if(user != null && !user.getIsActive()){
             return null;
         }
+
         return user;
     }
 }
