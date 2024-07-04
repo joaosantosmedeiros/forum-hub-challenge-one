@@ -48,11 +48,11 @@ public class TopicController {
         return ResponseEntity.ok(new ReturnTopicDTO(topic));
     }
 
-//    TODO fazer checagem se o usuario quer atualizar o topico de outra pessoa
     @PutMapping("/{id}")
     public ResponseEntity<ReturnTopicDTO> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicDTO dto) {
-        var topic = topicService.update(id, dto.message(), dto.title());
-        return ResponseEntity.ok(new ReturnTopicDTO(topic));
+        User author = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Topic topic = new Topic(id, dto.title(), dto.message(), null, null, true, author, null);
+        return ResponseEntity.ok(new ReturnTopicDTO(topicService.update(topic)));
     }
 
 //    TODO fazer checagem se o usuario quer deletar o topico de outra pessoa

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -29,22 +30,26 @@ public class TopicService {
     }
 
 
-    public Topic update(Long id, String message, String title) {
-        Topic topic = findById(id);
+    public Topic update(Topic topic) {
+        Topic topicExists = findById(topic.getId());
 
-        if(!topic.isActive()){
+        if(!Objects.equals(topic.getAuthor().getId(), topicExists.getAuthor().getId())){
+            throw new SecurityException("User can only update their own topics.");
+        }
+
+        if(!topicExists.isActive()){
             throw new IllegalArgumentException("Topic must be active.");
         }
 
-        if(message != null && !message.isBlank()){
-            topic.setMessage(message);
+        if(topic.getMessage() != null && !topic.getMessage().isBlank()){
+            topicExists.setMessage(topic.getMessage());
         }
 
-        if(title != null && !title.isBlank()){
-            topic.setTitle(title);
+        if(topic.getTitle() != null && !topic.getTitle().isBlank()){
+            topicExists.setTitle(topic.getTitle());
         }
 
-        return topicRepository.save(topic);
+        return topicRepository.save(topicExists);
     }
 
     public void delete(Long id) {
