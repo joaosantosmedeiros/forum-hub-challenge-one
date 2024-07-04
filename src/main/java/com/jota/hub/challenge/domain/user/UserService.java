@@ -44,4 +44,14 @@ public class UserService {
     public User findById(Long id) {
         return repository.findById(id).orElseThrow(() -> new NoSuchElementException("User does not exists."));
     }
+
+    public void delete(Long id){
+        var user = findById(id);
+        if(!user.getIsActive()){
+            throw new IllegalArgumentException("The user is already inactive.");
+        }
+
+        user.setIsActive(false);
+        repository.save(user);
+    }
 }
