@@ -1,6 +1,8 @@
 package com.jota.hub.challenge.domain.course;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -18,6 +20,10 @@ public class CourseService {
         }
 
         return courseRepository.save(course);
+    }
+
+    public Page<Course> list(Pageable pageable){
+        return courseRepository.findAll(pageable);
     }
 
     public Course findById(Long id){
