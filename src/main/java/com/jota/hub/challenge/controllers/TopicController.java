@@ -1,11 +1,13 @@
 package com.jota.hub.challenge.controllers;
 
-import com.jota.hub.challenge.domain.topic.*;
+import com.jota.hub.challenge.domain.course.CourseService;
+import com.jota.hub.challenge.domain.topic.Topic;
+import com.jota.hub.challenge.domain.topic.TopicService;
+import com.jota.hub.challenge.domain.topic.TopicStatus;
 import com.jota.hub.challenge.domain.topic.dto.CreateTopicDTO;
 import com.jota.hub.challenge.domain.topic.dto.ReturnTopicDTO;
 import com.jota.hub.challenge.domain.topic.dto.UpdateTopicDTO;
 import com.jota.hub.challenge.domain.user.User;
-import com.jota.hub.challenge.domain.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,11 +26,14 @@ public class TopicController {
 
     @Autowired
     private TopicService topicService;
+    @Autowired
+    private CourseService courseService;
 
     @PostMapping
     public ResponseEntity<ReturnTopicDTO> createTopic(@RequestBody @Valid CreateTopicDTO dto) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        var topic = new Topic(null, dto.title(), dto.message(), LocalDateTime.now(), TopicStatus.OPEN, user);
+        var course = courseService.findById(dto.courseId());
+        var topic = new Topic(null, dto.title(), dto.message(), LocalDateTime.now(), TopicStatus.OPEN, user, course);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ReturnTopicDTO(topicService.create(topic)));
     }
 
@@ -43,12 +48,14 @@ public class TopicController {
         return ResponseEntity.ok(new ReturnTopicDTO(topic));
     }
 
+//    TODO fazer checagem se o usuario quer atualizar o topico de outra pessoa
     @PutMapping("/{id}")
     public ResponseEntity<ReturnTopicDTO> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicDTO dto) {
         var topic = topicService.update(id, dto.message(), dto.title());
         return ResponseEntity.ok(new ReturnTopicDTO(topic));
     }
 
+//    TODO fazer checagem se o usuario quer deletar o topico de outra pessoa
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){

@@ -1,12 +1,10 @@
 package com.jota.hub.challenge.domain.topic;
 
-import com.jota.hub.challenge.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
 @Service
@@ -16,6 +14,9 @@ public class TopicService {
     private TopicRepository topicRepository;
 
     public Topic create(Topic topic) {
+        if(!topic.getCourse().isActive()){
+            throw new IllegalArgumentException("The topic's course must be active");
+        }
         return topicRepository.save(topic);
     }
 
