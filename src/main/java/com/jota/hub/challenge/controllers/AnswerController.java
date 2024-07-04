@@ -55,4 +55,12 @@ public class AnswerController {
         Answer answer = answerService.update(new Answer(id, dto.message(), null, null, author));
         return ResponseEntity.ok(new AnswerDTO(answer));
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        User author = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Answer answer = new Answer(id, null, null, null, author);
+        answerService.delete(answer);
+    }
 }

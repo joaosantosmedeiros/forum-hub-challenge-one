@@ -34,4 +34,13 @@ public class AnswerService {
         answerExists.setMessage(answer.getMessage());
         return repository.save(answerExists);
     }
+
+    public void delete(Answer answer) {
+        var answerExists = findById(answer.getId());
+        if(!Objects.equals(answerExists.getAuthor().getId(), answer.getAuthor().getId())){
+            throw new SecurityException("User can only delete their own answers.");
+        }
+
+        repository.delete(answerExists);
+    }
 }
