@@ -20,4 +20,9 @@ public class RestExceptionHandler {
     public ResponseEntity badRequest(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity unauthorized(SecurityException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
 }
