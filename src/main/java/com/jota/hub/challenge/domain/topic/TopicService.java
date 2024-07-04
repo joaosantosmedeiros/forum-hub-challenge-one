@@ -52,14 +52,17 @@ public class TopicService {
         return topicRepository.save(topicExists);
     }
 
-    public void delete(Long id) {
-        var topic = findById(id);
+    public void delete(Topic topic) {
+        var topicExists = findById(topic.getId());
+        if(!Objects.equals(topicExists.getAuthor().getId(), topic.getAuthor().getId())){
+            throw new SecurityException("User can only delete their own topics.");
+        }
 
-        if(!topic.isActive()){
+        if(!topicExists.isActive()){
             throw new IllegalArgumentException("The topic is already inactive.");
         }
 
-        topic.setActive(false);
-        topicRepository.save(topic);
+        topicExists.setActive(false);
+        topicRepository.save(topicExists);
     }
 }

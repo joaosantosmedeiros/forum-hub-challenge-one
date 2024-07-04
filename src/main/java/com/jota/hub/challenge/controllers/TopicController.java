@@ -55,10 +55,11 @@ public class TopicController {
         return ResponseEntity.ok(new ReturnTopicDTO(topicService.update(topic)));
     }
 
-//    TODO fazer checagem se o usuario quer deletar o topico de outra pessoa
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        topicService.delete(id);
+        User author = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Topic topic = new Topic(id, null, null, null, null, true, author, null);
+        topicService.delete(topic);
     }
 }
