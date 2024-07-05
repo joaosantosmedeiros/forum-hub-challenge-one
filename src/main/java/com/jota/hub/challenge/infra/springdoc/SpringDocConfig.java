@@ -6,9 +6,12 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class SpringDocConfig {
@@ -30,6 +33,8 @@ public class SpringDocConfig {
                 .contact(new Contact()
                         .name("João Pedro dos Santos Medeiros")
                         .email("jopesame@gmail.com"))
-                );
+                ).servers(List.of(
+                        new Server().url("http://localhost:8080").description("API url")
+                ));
     }
 }
