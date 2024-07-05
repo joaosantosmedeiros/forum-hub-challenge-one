@@ -48,6 +48,12 @@ public class CourseService {
 
     public Course update(Course course) {
         var courseExists = findById(course.getId());
+
+        var courseNameIsInUse = courseRepository.findByName(course.getName());
+        if(courseNameIsInUse.isPresent() && course.getId() != courseNameIsInUse.get().getId()){
+            throw new IllegalArgumentException("Course name is already in use.");
+        }
+
         if(course.getName() != null && !course.getName().isBlank() && !course.getName().equals(courseExists.getName())){
             courseExists.setName(course.getName());
         }
