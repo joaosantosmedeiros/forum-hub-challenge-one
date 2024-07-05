@@ -9,9 +9,16 @@ import com.jota.hub.challenge.domain.topic.dto.ReturnTopicDTO;
 import com.jota.hub.challenge.domain.topic.dto.UpdateTopicDTO;
 import com.jota.hub.challenge.domain.user.User;
 import com.jota.hub.challenge.infra.dto.StandardResponseDTO;
+import com.jota.hub.challenge.infra.springdoc.schemas.DefaultErrorResponseSchema;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,6 +29,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
+@Tag(name = "Topics", description = "Operations related to topics.")
+@SecurityRequirement(name = "bearer-key")
 @RestController
 @RequestMapping("/topicos")
 @AllArgsConstructor
@@ -31,6 +40,29 @@ public class TopicController {
     private CourseService courseService;
 
     @PostMapping
+    @Operation(description = "Topic creation.", summary = "Create a new topic.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Topic created"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid data provided.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DefaultErrorResponseSchema.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Course not found.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DefaultErrorResponseSchema.class)
+                    )
+            ),
+    })
     public ResponseEntity<StandardResponseDTO<ReturnTopicDTO>> createTopic(@RequestBody @Valid CreateTopicDTO dto) {
         var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         var course = courseService.findById(dto.courseId());
@@ -44,6 +76,13 @@ public class TopicController {
     }
 
     @GetMapping
+    @Operation(description = "List topics.", summary = "Topics listing.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success."
+            ),
+    })
     public ResponseEntity<StandardResponseDTO<Page<ReturnTopicDTO>>> list(@PageableDefault(sort = "creationTime") Pageable pageable){
         return ResponseEntity.ok(new StandardResponseDTO<>(
                 "Listing topics.",
@@ -53,6 +92,21 @@ public class TopicController {
     }
 
     @GetMapping("/{id}")
+    @Operation(description = "Topic search.", summary = "Search for a topic by its id.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Topic not found.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DefaultErrorResponseSchema.class)
+                    )
+            )
+    })
     public ResponseEntity<StandardResponseDTO<ReturnTopicDTO>> getOne(@PathVariable Long id) {
         var topic = topicService.findById(id);
         return ResponseEntity.ok(new StandardResponseDTO<>(
@@ -63,6 +117,37 @@ public class TopicController {
     }
 
     @PutMapping("/{id}")
+    @Operation(description = "Topic update.", summary = "Update a topic.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Success."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid data provided",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DefaultErrorResponseSchema.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "User tries to update another users' topic.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DefaultErrorResponseSchema.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Topic not found.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DefaultErrorResponseSchema.class)
+                    )
+            )
+    })
     public ResponseEntity<StandardResponseDTO<ReturnTopicDTO>> update(@PathVariable Long id, @RequestBody @Valid UpdateTopicDTO dto) {
         User author = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Topic topic = new Topic(id, dto.title(), dto.message(), null, null, true, author, null);
@@ -76,6 +161,37 @@ public class TopicController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
+    @Operation(description = "Topic delete.", summary = "Delete a topic.")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Success."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "User tries to delete an inactive topic.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DefaultErrorResponseSchema.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "User tries to delete another user's topic.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DefaultErrorResponseSchema.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Topic not found.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = DefaultErrorResponseSchema.class)
+                    )
+            )
+    })
     public void delete(@PathVariable Long id){
         User author = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Topic topic = new Topic(id, null, null, null, null, true, author, null);
