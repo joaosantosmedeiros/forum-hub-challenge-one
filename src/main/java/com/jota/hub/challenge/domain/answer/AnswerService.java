@@ -15,6 +15,9 @@ public class AnswerService {
     private AnswerRepository repository;
 
     public Answer create(Answer answer){
+        if(!answer.getTopic().isActive()){
+            throw new IllegalArgumentException("Topic must be active to accept answers.");
+        }
         return repository.save(answer);
     }
 
